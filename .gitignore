@@ -1,0 +1,37 @@
+# Build outputs
+/build/
+/out/
+/bin/
+
+# Gradle
+/.gradle/
+gradle-app.setting
+
+# OpenAPI generated sources (under build)
+/build/generated/
+/build/reports/
+
+# IDEs and editors
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and dumps
+*.log
+hs_err_pid*
+replay_pid*
+
+# Env/locals
+.env
+local.properties
+
+

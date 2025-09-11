@@ -1,6 +1,6 @@
 # Backend: Timers Service (Spring Boot)
 
-This service provides a timer platform with template-driven scheduling, instance materialization, and a REST API (Swagger/OpenAPI). It uses Spring Boot, Spring Data JPA, Quartz, and OpenAPI codegen.
+This service provides a timer platform with timer-driven scheduling (no instances), Kafka event publication, and a REST API (Swagger/OpenAPI). It uses Spring Boot, Spring Data JPA, Quartz (JDBC JobStore), and OpenAPI codegen.
 
 ## Stack
 - Java 17, Spring Boot (Web, Validation, Data JPA)
@@ -24,74 +24,67 @@ backend/
   src/main/java/com/example/timers
     domain/
       TimerStatus.java
-      template/TimerTemplate.java  # Template with condition arrays
-      instance/TimerInstance.java  # Materialized combination (one per set of conditions)
+      timer/Timer.java             # Timer with filter arrays and schedule
       execution/...                # TimerExecution + enums
     repository/                    # Spring Data JPA repositories
     scheduler/
-      TimerFireJob.java            # One-success-per-day guard, updates lastTriggeredAt
-      TimerScheduler.java          # Schedules/updates Quartz jobs
+      TimerFireJob.java            # Publishes event for each firing, records execution
+      TimerScheduler.java          # Schedules/updates Quartz jobs by timerId
     service/
-      TemplateMaterializer.java    # Expands template→instances, saves, schedules
-      TemplateService.java         # Create/update + materialize
+      TimerService.java            # Create/update + schedule timers
     web/
-      TemplatesApiDelegateImpl.java
-      InstancesApiDelegateImpl.java (stubs for now)
+      TemplatesApiDelegateImpl.java  # Manages Timers via existing Template API shapes
+      InstancesApiDelegateImpl.java  # Returns 410 Gone (deprecated)
   src/main/resources/application.properties
 ```
 
 ## Domain model
-- Template (`timer_templates`)
+- Timer (`timers`)
   - id, name, description, cronExpression, zoneId (IANA), triggerTime, suspended
-  - conditions: countries[], regions[], subregions[], flowTypes[], clientIds[], productTypes[] (stored via `@ElementCollection`)
-- Instance (`timer_instances`)
-  - id (deterministic hash of templateId+dimensions), templateId, country/region/subregion/flowType/clientId/productType
-  - status (ACTIVE/SUSPENDED), zoneId, lastSuccessAt, lastAttemptAt, attemptCountToday
+  - filters: countries[], regions[], subregions[], flowTypes[], clientIds[], productTypes[] (stored via `@ElementCollection`)
 - Execution (`timer_executions`)
-  - instanceId, scheduledFor, startedAt, finishedAt, outcome (SUCCESS/FAILED/SKIPPED), errorMessage, triggerType (SCHEDULED/MANUAL), idempotencyKey
+  - timerId, scheduledFor, startedAt, finishedAt, outcome (SUCCESS/FAILED/SKIPPED), errorMessage, triggerType (SCHEDULED/MANUAL), idempotencyKey
 
 ## Scheduling model
-- One Quartz job per Instance; cron evaluated in `zoneId` with misfire policy DoNothing.
-- `TimerFireJob` enforces one successful execution per calendar day per instance (in its zone) and updates `lastSuccessAt`.
-- **Persistent storage**: Jobs stored in database (H2) via Quartz JDBC store for reliability across restarts.
-- **Job lifecycle management**: Quartz jobs are automatically paused/resumed when instances are suspended/resumed.
-- **Human-readable job descriptions**: Quartz jobs include descriptive names showing template, dimensions, and schedule for easier debugging and monitoring.
-- Templates create/update:
-  - `TemplateService.createAndMaterialize` → `TemplateMaterializer.materializeAndSchedule`:
-    - Compute cartesian product of conditions
-    - Upsert instances via `TimerInstanceRepository.saveAll`
-    - Schedule each via `TimerScheduler.scheduleOrUpdate(cron, zone)`
+- One Quartz job per Timer. The job key is `(name=timerId, group=instances)`. The trigger key matches the job key.
+- Schedule is resolved from `cronExpression` if provided; otherwise derived daily from `triggerTime`. All cron evaluation respects the timer `zoneId`.
+- Misfires use DoNothing to avoid catch-up floods after downtime.
+- `TimerFireJob` executes on fire: publishes a TimerExecutionEvent to Kafka and records a `TimerExecution` row with `triggerType` MANUAL or SCHEDULED.
+- Manual trigger (`POST /api/timers/{id}/_trigger`) creates a one-time immediate trigger and does not persist a new cron trigger (it appears transiently in `QRTZ_FIRED_TRIGGERS`).
+- **Persistent storage**: Quartz jobs and triggers stored in DB (H2 in dev) via Quartz JDBC store for reliability.
 
 ## API (see `openapi/api.yaml`)
-- Templates
-  - `GET /api/templates` — list
-  - `POST /api/templates` — create template and materialize instances
-  - `GET /api/templates/{id}` — get
-  - `PUT /api/templates/{id}` — update template and re-materialize
-- Instances
-  - `GET /api/instances` — list/filter (implementation stubs; add filtering in an `InstanceService`)
-  - `POST /api/instances/_suspend|_resume|_trigger` — batch ops (stubs)
-- Instances
-  - `GET /api/instances` — list/filter instances
-  - `POST /api/instances/_suspend|_resume|_trigger` — batch operations
+- Timers (legacy tag name "Templates" in the spec)
+  - `GET /api/templates` — list timers
+  - `POST /api/templates` — create timer and schedule (resolves cron/trigger time)
+  - `GET /api/templates/{id}` — get timer by id
+  - `PUT /api/templates/{id}` — update timer and reschedule; if `suspended=true`, the job is paused (Quartz state `PAUSED`), otherwise `WAITING`.
+- Triggers
+  - `POST /api/timers/{id}/_trigger` — manual, immediate fire (records execution with `TRIGGER_TYPE=MANUAL`)
+  - `POST /api/timers/_trigger` — batch manual trigger by ids
+- Executions
+  - `GET /api/executions` — list execution records (basic pagination)
 
 ## Code generation
 - Generate: `./gradlew openApiGenerate`
 - Generated sources are added to the main source set at `build/generated/src/main/java`.
 
 ## Configuration (dev)
-- `application.properties` configures H2, JPA `ddl-auto=update`, formatted SQL, and H2 console.
+- `application.properties` configures H2, JPA `ddl-auto=update`, Quartz JDBC JobStore (`spring.quartz.job-store-type=jdbc`), and H2 console.
+- Kafka properties exist; when enabled, `KafkaEventService` publishes to topic `app.kafka.topic.timer-executions` (default `timer-executions`).
 
 ## Tests
-- `TemplateMaterializerTest` — cartesian materialization + scheduling calls
-- Tests for template materialization and instance management
-- `DemoApplicationSmokeTest` — Spring context loads
+- Integration tests cover: create/update, suspend/resume, manual/scheduled triggers, multi-timer scenarios, Quartz state (`WAITING`/`PAUSED`), cron updates (`QRTZ_CRON_TRIGGERS`), collection persistence, and validation (zone/cron).
+- Embedded Kafka tests are scaffolded and currently disabled; enable when publishing is desired.
 - Run tests: `./gradlew test`
 
+## Logic overview (high-level)
+- Create/update timer → `TimerService.saveAndSchedule` persists `Timer` and schedules Quartz job via `TimerScheduler`.
+- If `suspended=true`, the job is paused right after scheduling; otherwise, it remains active (`WAITING`).
+- On fire (scheduled or manual), `TimerFireJob` loads the `Timer`, executes placeholder business logic, publishes a Kafka event (if enabled), and records a `TimerExecution` with `outcome` and `triggerType`.
+
 ## Next steps
-- Implement `InstanceService` for filtering + batch suspend/resume/trigger (and wire into `InstancesApiDelegateImpl`).
-- Add template-level overlay suspend (optional): effective active = `!template.suspended && instance.status==ACTIVE`.
-- Persist executions and expose history endpoints.
-- Switch to PostgreSQL + Flyway and Quartz JDBC store for production.
+- Expose execution history filters by `timerId`.
+- Switch to PostgreSQL + Flyway for DDL and Quartz JDBC store in production.
 
 

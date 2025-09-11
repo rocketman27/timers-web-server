@@ -11,6 +11,7 @@ public class TimerExecution {
     private String id;
 
     private String instanceId;
+    private String timerId;
     private OffsetDateTime scheduledFor;
     private OffsetDateTime startedAt;
     private OffsetDateTime finishedAt;
@@ -29,6 +30,8 @@ public class TimerExecution {
     public void setId(String id) { this.id = id; }
     public String getInstanceId() { return instanceId; }
     public void setInstanceId(String instanceId) { this.instanceId = instanceId; }
+    public String getTimerId() { return timerId; }
+    public void setTimerId(String timerId) { this.timerId = timerId; }
     public OffsetDateTime getScheduledFor() { return scheduledFor; }
     public void setScheduledFor(OffsetDateTime scheduledFor) { this.scheduledFor = scheduledFor; }
     public OffsetDateTime getStartedAt() { return startedAt; }

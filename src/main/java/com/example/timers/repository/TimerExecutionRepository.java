@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TimerExecutionRepository extends JpaRepository<TimerExecution, String> {
     Page<TimerExecution> findByInstanceId(String instanceId, Pageable pageable);
+    Page<TimerExecution> findByTimerId(String timerId, Pageable pageable);
 }
 
 

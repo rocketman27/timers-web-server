@@ -1,6 +1,7 @@
 package com.example.timers.scheduler;
 
 import org.quartz.*;
+import com.example.timers.domain.timer.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class TimerScheduler {
         JobDetail jobDetail = newJob(TimerFireJob.class)
                 .withIdentity(jobKey)
                 .withDescription(buildHumanReadableDescription(templateName, country, region, subregion, flowType, clientId, productType, cronExpression, zoneId, excludedCountries, excludedRegions))
-                .usingJobData(TimerFireJob.DATA_INSTANCE_ID, id)
+                .usingJobData(TimerFireJob.DATA_TIMER_ID, id)
                 .usingJobData(TimerFireJob.DATA_ZONE_ID, zoneId)
                 .build();
 
@@ -65,6 +66,46 @@ public class TimerScheduler {
         scheduleOrUpdate(id, cronExpression, zoneId, "Unknown", "", "", "", "", "", "");
     }
 
+    public void scheduleOrUpdateTimer(Timer timer) throws SchedulerException {
+        String cronExpression = resolveCron(timer);
+        JobKey jobKey = jobKey(timer.getId());
+
+        JobDetail jobDetail = newJob(TimerFireJob.class)
+                .withIdentity(jobKey)
+                .withDescription("Timer: " + timer.getName())
+                .usingJobData(TimerFireJob.DATA_TIMER_ID, timer.getId())
+                .usingJobData(TimerFireJob.DATA_ZONE_ID, timer.getZoneId())
+                .build();
+
+        CronScheduleBuilder scheduleBuilder = cronSchedule(cronExpression)
+                .inTimeZone(TimeZone.getTimeZone(timer.getZoneId()))
+                .withMisfireHandlingInstructionDoNothing();
+
+        Trigger trigger = newTrigger()
+                .withIdentity(triggerKey(timer.getId()))
+                .withDescription("Timer: " + timer.getName())
+                .forJob(jobDetail)
+                .withSchedule(scheduleBuilder)
+                .build();
+
+        if (scheduler.checkExists(jobKey)) {
+            scheduler.deleteJob(jobKey);
+        }
+        scheduler.scheduleJob(jobDetail, trigger);
+    }
+
+    private static String resolveCron(Timer timer) {
+        if (timer.getCronExpression() != null && !timer.getCronExpression().isBlank()) {
+            return timer.getCronExpression();
+        }
+        if (timer.getTriggerTime() != null) {
+            int hh = timer.getTriggerTime().getHour();
+            int mm = timer.getTriggerTime().getMinute();
+            return String.format("0 %d %d * * ?", mm, hh);
+        }
+        return "0 0 0 * * ?";
+    }
+
     public void pause(String id) throws SchedulerException {
         scheduler.pauseJob(jobKey(id));
     }
@@ -74,7 +115,7 @@ public class TimerScheduler {
     }
 
     public void triggerNow(String id) throws SchedulerException {
-        log.info("Manually triggering job for instance: {}", id);
+        log.info("Manually triggering job for instance/timer: {}", id);
         
         // Create a one-time trigger for immediate execution
         // This ensures the execution is recorded in QRTZ_FIRED_TRIGGERS
@@ -86,11 +127,23 @@ public class TimerScheduler {
             scheduler.unscheduleJob(immediateTriggerKey);
         }
         
+        // Ensure the base job exists; if not, create a minimal one (timerId only)
+        JobKey baseJobKey = jobKey(id);
+        if (!scheduler.checkExists(baseJobKey)) {
+            log.info("Base Quartz job for {} not found. Creating minimal job for manual trigger.", id);
+            JobDetail jobDetail = newJob(TimerFireJob.class)
+                    .withIdentity(baseJobKey)
+                    .usingJobData(TimerFireJob.DATA_TIMER_ID, id)
+                    .storeDurably()
+                    .build();
+            scheduler.addJob(jobDetail, true);
+        }
+
         // Create a one-time trigger that fires immediately
         Trigger immediateTrigger = newTrigger()
                 .withIdentity(immediateTriggerKey)
-                .forJob(jobKey(id))
-                .withDescription("Manual trigger for instance: " + id)
+                .forJob(baseJobKey)
+                .withDescription("Manual trigger for instance/timer: " + id)
                 .startNow()
                 .build();
         
