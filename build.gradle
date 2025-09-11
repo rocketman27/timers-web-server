@@ -1,0 +1,87 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.5'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.openapi.generator' version '7.7.0'
+}
+
+group = 'com.example.timers'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'com.h2database:h2'
+	implementation 'org.springframework.boot:spring-boot-starter-quartz'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir "$buildDir/generated/src/main/java"
+		}
+	}
+}
+
+openApiGenerate {
+	generatorName = "spring"
+	inputSpec = "$projectDir/openapi/api.yaml"
+	outputDir = "$buildDir/generated"
+	apiPackage = "com.example.timers.api"
+	modelPackage = "com.example.timers.model"
+	invokerPackage = "com.example.timers.invoker"
+	configOptions = [
+		interfaceOnly: "false",
+		delegatePattern: "true",
+		useSpringBoot3: "true",
+		dateLibrary: "java8",
+		performBeanValidation: "true",
+		useTags: "true",
+		hideGenerationTimestamp: "true",
+		serializableModel: "true",
+		openApiNullable: "false"
+	]
+	globalProperties = [
+		apis: "",
+		models: "",
+		supportingFiles: "ApiUtil.java"
+	]
+}
+
+tasks.named('compileJava') {
+	dependsOn tasks.named('openApiGenerate')
+}
+
+// Delete previous generated sources before generation to avoid stale files
+tasks.named('openApiGenerate') {
+	doFirst {
+		delete "$buildDir/generated"
+	}
+}
+
+tasks.named('clean') {
+	doFirst {
+		delete "$buildDir/generated"
+	}
+}

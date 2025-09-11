@@ -1,0 +1,10 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.project.sourcePaths": [
+    "src/main/java",
+    "build/generated/src/main/java"
+  ]
+}
+
+
+

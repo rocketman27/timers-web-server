@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.timers.service.TemplateMaterializerTest" tests="1" skipped="0" failures="1" errors="0" timestamp="2025-09-04T17:18:10.708Z" hostname="Pavels-MacBook-Pro.local" time="0.277">
+  <properties/>
+  <testcase name="materialize_createsCartesianProduct_andSchedulesEach()" classname="com.example.timers.service.TemplateMaterializerTest" time="0.277">
+    <failure message="Argument(s) are different! Wanted:&#10;scheduler.scheduleOrUpdate(&#10;    &lt;any&gt;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;&#10;);&#10;-&gt; at com.example.timers.scheduler.TimerScheduler.scheduleOrUpdate(TimerScheduler.java:56)&#10;Actual invocations have different arguments:&#10;scheduler.scheduleOrUpdate(&#10;    &quot;ExDRaAqT_On6CiciUVUMtQ&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;US&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NY&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c1&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;63Vzg2GPSTHc0PW777DUOg&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;US&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NY&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c2&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;Fwqdi0B-7UBSUDhWbJH8FQ&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;US&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NY&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c3&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;N8V6DkAMweXm6HDUT_lxqA&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;US&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NJ&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c1&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;JbZP07YHvSRZ_qA6apj5ow&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;US&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NJ&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c2&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;tdvg7S3ei0E09z99ZFj4tw&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;US&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NJ&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c3&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;LixZS9Idh72vrBOfKcUNmw&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;CA&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NY&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c1&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;8JoHKXH1_o4wPH5RaqP8cw&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;CA&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NY&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c2&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;ZZJu81MQGAuRsOnGY0Ztzg&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;CA&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NY&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c3&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;MnkMkMSN6ywxNq3jWGSi6w&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;CA&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NJ&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c1&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;hZ1aIhBGmD9Ldltz24gNGQ&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;CA&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NJ&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c2&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;scheduler.scheduleOrUpdate(&#10;    &quot;fGr8T-ts82zi8960jtOv2A&quot;,&#10;    &quot;0 15 10 * * ?&quot;,&#10;    &quot;UTC&quot;,&#10;    null,&#10;    &quot;CA&quot;,&#10;    &quot;NE&quot;,&#10;    &quot;NJ&quot;,&#10;    &quot;A&quot;,&#10;    &quot;c3&quot;,&#10;    &quot;&quot;&#10;);&#10;-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)&#10;" type="org.mockito.exceptions.verification.opentest4j.ArgumentsAreDifferent">Argument(s) are different! Wanted:
+scheduler.scheduleOrUpdate(
+    &lt;any&gt;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;
+);
+-&gt; at com.example.timers.scheduler.TimerScheduler.scheduleOrUpdate(TimerScheduler.java:56)
+Actual invocations have different arguments:
+scheduler.scheduleOrUpdate(
+    &quot;ExDRaAqT_On6CiciUVUMtQ&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;US&quot;,
+    &quot;NE&quot;,
+    &quot;NY&quot;,
+    &quot;A&quot;,
+    &quot;c1&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;63Vzg2GPSTHc0PW777DUOg&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;US&quot;,
+    &quot;NE&quot;,
+    &quot;NY&quot;,
+    &quot;A&quot;,
+    &quot;c2&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;Fwqdi0B-7UBSUDhWbJH8FQ&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;US&quot;,
+    &quot;NE&quot;,
+    &quot;NY&quot;,
+    &quot;A&quot;,
+    &quot;c3&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;N8V6DkAMweXm6HDUT_lxqA&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;US&quot;,
+    &quot;NE&quot;,
+    &quot;NJ&quot;,
+    &quot;A&quot;,
+    &quot;c1&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;JbZP07YHvSRZ_qA6apj5ow&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;US&quot;,
+    &quot;NE&quot;,
+    &quot;NJ&quot;,
+    &quot;A&quot;,
+    &quot;c2&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;tdvg7S3ei0E09z99ZFj4tw&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;US&quot;,
+    &quot;NE&quot;,
+    &quot;NJ&quot;,
+    &quot;A&quot;,
+    &quot;c3&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;LixZS9Idh72vrBOfKcUNmw&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;CA&quot;,
+    &quot;NE&quot;,
+    &quot;NY&quot;,
+    &quot;A&quot;,
+    &quot;c1&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;8JoHKXH1_o4wPH5RaqP8cw&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;CA&quot;,
+    &quot;NE&quot;,
+    &quot;NY&quot;,
+    &quot;A&quot;,
+    &quot;c2&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;ZZJu81MQGAuRsOnGY0Ztzg&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;CA&quot;,
+    &quot;NE&quot;,
+    &quot;NY&quot;,
+    &quot;A&quot;,
+    &quot;c3&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;MnkMkMSN6ywxNq3jWGSi6w&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;CA&quot;,
+    &quot;NE&quot;,
+    &quot;NJ&quot;,
+    &quot;A&quot;,
+    &quot;c1&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;hZ1aIhBGmD9Ldltz24gNGQ&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;CA&quot;,
+    &quot;NE&quot;,
+    &quot;NJ&quot;,
+    &quot;A&quot;,
+    &quot;c2&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+scheduler.scheduleOrUpdate(
+    &quot;fGr8T-ts82zi8960jtOv2A&quot;,
+    &quot;0 15 10 * * ?&quot;,
+    &quot;UTC&quot;,
+    null,
+    &quot;CA&quot;,
+    &quot;NE&quot;,
+    &quot;NJ&quot;,
+    &quot;A&quot;,
+    &quot;c3&quot;,
+    &quot;&quot;
+);
+-&gt; at com.example.timers.service.TemplateMaterializer.materializeAndSchedule(TemplateMaterializer.java:50)
+
+	at app//com.example.timers.scheduler.TimerScheduler.scheduleOrUpdate(TimerScheduler.java:56)
+	at app//com.example.timers.service.TemplateMaterializerTest.materialize_createsCartesianProduct_andSchedulesEach(TemplateMaterializerTest.java:63)
+	at java.base@17.0.16/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base@17.0.16/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base@17.0.16/java.util.ArrayList.forEach(ArrayList.java:1511)
+</failure>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

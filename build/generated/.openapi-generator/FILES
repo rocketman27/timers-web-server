@@ -1,0 +1,16 @@
+src/main/java/com/example/timers/api/ApiUtil.java
+src/main/java/com/example/timers/api/ExecutionsApi.java
+src/main/java/com/example/timers/api/ExecutionsApiController.java
+src/main/java/com/example/timers/api/ExecutionsApiDelegate.java
+src/main/java/com/example/timers/api/InstancesApi.java
+src/main/java/com/example/timers/api/InstancesApiController.java
+src/main/java/com/example/timers/api/InstancesApiDelegate.java
+src/main/java/com/example/timers/api/TemplatesApi.java
+src/main/java/com/example/timers/api/TemplatesApiController.java
+src/main/java/com/example/timers/api/TemplatesApiDelegate.java
+src/main/java/com/example/timers/model/ApiError.java
+src/main/java/com/example/timers/model/BatchIdsRequest.java
+src/main/java/com/example/timers/model/CreateTemplateRequest.java
+src/main/java/com/example/timers/model/TimerExecution.java
+src/main/java/com/example/timers/model/TimerInstance.java
+src/main/java/com/example/timers/model/TimerTemplate.java

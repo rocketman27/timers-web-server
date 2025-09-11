@@ -1,0 +1,321 @@
+openapi: 3.0.3
+info:
+  title: Backend API
+  description: Sample API for timers management
+  version: 0.1.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/templates:
+    get:
+      tags: [Templates]
+      summary: List templates
+      operationId: listTemplates
+      responses:
+        '200':
+          description: Templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TimerTemplate' }
+    post:
+      tags: [Templates]
+      summary: Create template and materialize instances
+      operationId: createTemplate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateTemplateRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TimerTemplate' }
+  /api/templates/{id}:
+    get:
+      tags: [Templates]
+      summary: Get template by id
+      operationId: getTemplateById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Template
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TimerTemplate' }
+        '404': { description: Not Found }
+    put:
+      tags: [Templates]
+      summary: Update template and re-materialize instances
+      operationId: updateTemplate
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateTemplateRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TimerTemplate' }
+  /api/instances:
+    get:
+      tags: [Instances]
+      summary: List instances
+      operationId: listInstances
+      parameters:
+        - in: query
+          name: templateId
+          schema: { type: string }
+        - in: query
+          name: country
+          schema: { type: string }
+        - in: query
+          name: region
+          schema: { type: string }
+        - in: query
+          name: subregion
+          schema: { type: string }
+        - in: query
+          name: flowType
+          schema: { type: string }
+        - in: query
+          name: clientId
+          schema: { type: string }
+        - in: query
+          name: productType
+          schema: { type: string, enum: [CASH, SWAP] }
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 0, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, minimum: 1, maximum: 200, default: 20 }
+      responses:
+        '200':
+          description: Instances
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TimerInstance' }
+  /api/instances/_suspend:
+    post:
+      tags: [Instances]
+      summary: Suspend instances by ids
+      operationId: suspendInstances
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BatchIdsRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TimerInstance' }
+  /api/instances/_resume:
+    post:
+      tags: [Instances]
+      summary: Resume instances by ids
+      operationId: resumeInstances
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BatchIdsRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TimerInstance' }
+  /api/instances/_trigger:
+    post:
+      tags: [Instances]
+      summary: Trigger instances by ids
+      operationId: triggerInstances
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BatchIdsRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TimerInstance' }
+  /api/instances/_reset:
+    post:
+      tags: [Instances]
+      summary: Reset instances by ids (set completed/failed back to active)
+      operationId: resetInstances
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BatchIdsRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TimerInstance' }
+  /api/executions:
+    get:
+      tags: [Executions]
+      summary: List executions
+      operationId: listExecutions
+      parameters:
+        - in: query
+          name: instanceId
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 0, default: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, minimum: 1, maximum: 200, default: 20 }
+      responses:
+        '200':
+          description: Executions
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/TimerExecution' }
+components:
+  schemas:
+    TimerTemplate:
+      type: object
+      required: [id, name, zoneId]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        cronExpression:
+          type: string
+          nullable: true
+          description: "Optional. If omitted, backend derives a daily cron from triggerTime."
+        zoneId: { type: string, description: IANA time zone id, example: Europe/London }
+        triggerTime:
+          type: string
+          description: "Daily trigger time HH:mm"
+          example: 10:15
+        suspended: { type: boolean, default: false }
+        countries: { type: array, items: { type: string } }
+        regions: { type: array, items: { type: string } }
+        subregions: { type: array, items: { type: string } }
+        flowTypes: { type: array, items: { type: string } }
+        clientIds: { type: array, items: { type: string } }
+        productTypes: { type: array, items: { type: string, enum: [CASH, SWAP] } }
+    CreateTemplateRequest:
+      type: object
+      required: [name, zoneId]
+      properties:
+        name: { type: string }
+        description: { type: string, nullable: true }
+        cronExpression:
+          type: string
+          nullable: true
+        zoneId: { type: string }
+        triggerTime:
+          type: string
+          description: "Daily trigger time HH:mm"
+          example: 10:15
+        suspended: { type: boolean, default: false }
+        countries: { type: array, items: { type: string } }
+        regions: { type: array, items: { type: string } }
+        subregions: { type: array, items: { type: string } }
+        flowTypes: { type: array, items: { type: string } }
+        clientIds: { type: array, items: { type: string } }
+        productTypes: { type: array, items: { type: string, enum: [CASH, SWAP] } }
+    TimerInstance:
+      type: object
+      required: [id, templateId, country, region, subregion, flowType, clientId, productType, status, zoneId]
+      properties:
+        id: { type: string }
+        templateId: { type: string }
+        country: { type: string }
+        region: { type: string }
+        subregion: { type: string }
+        flowType: { type: string }
+        clientId: { type: string }
+        productType: { type: string, enum: [CASH, SWAP] }
+        status:
+          type: string
+          enum: [ACTIVE, SUSPENDED, RUNNING, COMPLETED, FAILED]
+        zoneId: { type: string }
+        effectiveStartAt: { type: string, format: date-time, nullable: true }
+        effectiveEndAt: { type: string, format: date-time, nullable: true }
+        lastSuccessAt: { type: string, format: date-time, nullable: true }
+        lastAttemptAt: { type: string, format: date-time, nullable: true }
+        attemptCountToday: { type: integer, format: int32, nullable: true }
+    Timer:
+      type: object
+      properties: {}
+    CreateTimerRequest:
+      type: object
+      properties: {}
+    TimerExecution:
+      type: object
+      required: [id, instanceId]
+      properties:
+        id: { type: string }
+        instanceId: { type: string }
+        scheduledFor: { type: string, format: date-time, nullable: true }
+        startedAt: { type: string, format: date-time, nullable: true }
+        finishedAt: { type: string, format: date-time, nullable: true }
+        outcome:
+          type: string
+          enum: [SUCCESS, FAILED, SKIPPED]
+          nullable: true
+        errorMessage: { type: string, nullable: true }
+        triggerType:
+          type: string
+          enum: [SCHEDULED, MANUAL]
+          nullable: true
+    BatchIdsRequest:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          items:
+            type: string
+    ApiError:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        details:
+          type: string
+          nullable: true
+
+    
+
