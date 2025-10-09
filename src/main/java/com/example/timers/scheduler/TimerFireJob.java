@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import com.example.timers.domain.event.TimerExecutionEvent;
+import com.example.timers.domain.event.FilterCondition;
+import com.example.timers.domain.event.TimerEvent;
 import com.example.timers.service.KafkaEventService;
 
 @Component
@@ -100,7 +102,8 @@ public class TimerFireJob implements Job {
 
     private void publishTimerExecutionEvent(Timer timer, ZonedDateTime executionTime, TriggerType triggerType) {
         try {
-            TimerExecutionEvent event = new TimerExecutionEvent(
+            // Backward-compatible execution event (existing consumers)
+            /*TimerExecutionEvent executionEvent = new TimerExecutionEvent(
                 timer.getId(),
                 timer.getId(),
                 timer.getName(),
@@ -116,8 +119,19 @@ public class TimerFireJob implements Job {
                 executionTime.toOffsetDateTime(),
                 triggerType.name()
             );
-            kafkaEventService.publishTimerExecution(event);
-            log.debug("Published timer execution event to Kafka: {}", event);
+            kafkaEventService.publishTimerExecution(executionEvent);
+            log.debug("Published timer execution event to Kafka: {}", executionEvent);*/
+
+            // New shape for downstream service (Timer + FilterCondition)
+            FilterCondition fc = new FilterCondition();
+            fc.setRegions(timer.getRegions());
+            fc.setCountries(timer.getCountries());
+            fc.setProductTypes(timer.getProductTypes());
+            fc.setFlowTypes(timer.getFlowTypes());
+            // bookingModels not present in our domain yet; leave empty
+            TimerEvent timerEvent = new TimerEvent(timer.getName(), "default", fc);
+            kafkaEventService.publishTimerExecution(timerEvent);
+            log.debug("Published timer event (new shape) to Kafka: {}", timerEvent);
         } catch (Exception e) {
             log.error("Failed to publish timer execution event to Kafka for timer: {}", timer.getId(), e);
         }

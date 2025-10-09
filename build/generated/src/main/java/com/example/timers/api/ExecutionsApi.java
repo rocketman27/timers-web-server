@@ -5,7 +5,7 @@
  */
 package com.example.timers.api;
 
-import com.example.timers.model.TimerExecution;
+import com.example.timers.model.TimerExecutionDto;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -51,7 +51,7 @@ public interface ExecutionsApi {
         tags = { "Executions" },
         responses = {
             @ApiResponse(responseCode = "200", description = "Executions", content = {
-                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TimerExecution.class)))
+                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TimerExecutionDto.class)))
             })
         }
     )
@@ -61,7 +61,7 @@ public interface ExecutionsApi {
         produces = { "application/json" }
     )
     
-    default ResponseEntity<List<TimerExecution>> listExecutions(
+    default ResponseEntity<List<TimerExecutionDto>> listExecutions(
         @Parameter(name = "instanceId", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "instanceId", required = false) String instanceId,
         @Min(0) @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
         @Min(1) @Max(200) @Parameter(name = "size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "size", required = false, defaultValue = "20") Integer size

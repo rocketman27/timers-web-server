@@ -1,5 +1,6 @@
 package com.example.timers.service;
 
+import com.example.timers.domain.event.TimerEvent;
 import com.example.timers.domain.event.TimerExecutionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +24,13 @@ public class KafkaEventService {
         this.publishEnabled = publishEnabled;
     }
 
-    public void publishTimerExecution(TimerExecutionEvent event) {
+    public void publishTimerExecution(TimerEvent event) {
         try {
             if (!publishEnabled) {
                 log.debug("Kafka publishing disabled; skipping event send");
                 return;
             }
-            kafkaTemplate.send(topic, event.getInstanceId(), event);
+            kafkaTemplate.send(topic, event.timerName(), event);
             log.debug("Published TimerExecutionEvent to topic {}: {}", topic, event);
         } catch (Exception e) {
             log.error("Failed to publish TimerExecutionEvent", e);

@@ -1,59 +1,59 @@
--- Timer Templates
-INSERT INTO timer_templates (id, name, description, cron_expression, zone_id, trigger_time, suspended)
+-- Seed Timers (replacing templates)
+INSERT INTO timers (id, name, description, cron_expression, zone_id, trigger_time, suspended)
 VALUES
-  ('tpl-us-demo', 'European Morning Batch', 'European demo template', NULL, 'Europe/London', '09:00', FALSE),
-  ('tpl-eu-demo', 'European Noon Batch', 'European demo template', NULL, 'Europe/Berlin', '12:00', FALSE),
-  ('tpl-apac-demo', 'APAC Morning Batch', 'APAC demo template', NULL, 'Asia/Tokyo', '09:00', FALSE);
+  ('tm-eur-morning', 'European Morning Batch', 'European demo timer', NULL, 'Europe/London', '09:00', FALSE),
+  ('tm-eur-noon', 'European Noon Batch', 'European demo timer', NULL, 'Europe/Berlin', '12:00', FALSE),
+  ('tm-apac-morning', 'APAC Morning Batch', 'APAC demo timer', NULL, 'Asia/Tokyo', '09:00', FALSE);
 
 -- Countries
-INSERT INTO timer_template_countries (template_id, country) VALUES
-  ('tpl-us-demo', 'GB'),
-  ('tpl-us-demo', 'DE'),
-  ('tpl-us-demo', 'FR'),
-  ('tpl-eu-demo', 'IT'),
-  ('tpl-eu-demo', 'ES'),
-  ('tpl-eu-demo', 'CZ'),
-  ('tpl-eu-demo', 'PL'),
-  ('tpl-apac-demo', 'JP'),
-  ('tpl-apac-demo', 'CN'),
-  ('tpl-apac-demo', 'HK'),
-  ('tpl-apac-demo', 'SG'),
-  ('tpl-apac-demo', 'KR'),
-  ('tpl-apac-demo', 'AU');
+INSERT INTO timer_countries (timer_id, country) VALUES
+  ('tm-eur-morning', 'GB'),
+  ('tm-eur-morning', 'DE'),
+  ('tm-eur-morning', 'FR'),
+  ('tm-eur-noon', 'IT'),
+  ('tm-eur-noon', 'ES'),
+  ('tm-eur-noon', 'CZ'),
+  ('tm-eur-noon', 'PL'),
+  ('tm-apac-morning', 'JP'),
+  ('tm-apac-morning', 'CN'),
+  ('tm-apac-morning', 'HK'),
+  ('tm-apac-morning', 'SG'),
+  ('tm-apac-morning', 'KR'),
+  ('tm-apac-morning', 'AU');
 
--- Regions (simplified to 3 main regions)
-INSERT INTO timer_template_regions (template_id, region) VALUES
-  ('tpl-us-demo', 'EMEA'),
-  ('tpl-eu-demo', 'EMEA'),
-  ('tpl-apac-demo', 'APAC');
+-- Regions
+INSERT INTO timer_regions (timer_id, region) VALUES
+  ('tm-eur-morning', 'EMEA'),
+  ('tm-eur-noon', 'EMEA'),
+  ('tm-apac-morning', 'APAC');
 
 -- Flow types
-INSERT INTO timer_template_flow_types (template_id, flow_type) VALUES
-  ('tpl-us-demo', 'FX'),
-  ('tpl-us-demo', 'SWAP'),
-  ('tpl-us-demo', 'CASH'),
-  ('tpl-eu-demo', 'FX'),
-  ('tpl-eu-demo', 'SWAP'),
-  ('tpl-apac-demo', 'FX'),
-  ('tpl-apac-demo', 'SWAP'),
-  ('tpl-apac-demo', 'CASH');
+INSERT INTO timer_flow_types (timer_id, flow_type) VALUES
+  ('tm-eur-morning', 'FX'),
+  ('tm-eur-morning', 'SWAP'),
+  ('tm-eur-morning', 'CASH'),
+  ('tm-eur-noon', 'FX'),
+  ('tm-eur-noon', 'SWAP'),
+  ('tm-apac-morning', 'FX'),
+  ('tm-apac-morning', 'SWAP'),
+  ('tm-apac-morning', 'CASH');
 
 -- Client IDs
-INSERT INTO timer_template_client_ids (template_id, client_id) VALUES
-  ('tpl-us-demo', 'CLIENT_GB001'),
-  ('tpl-us-demo', 'CLIENT_DE001'),
-  ('tpl-us-demo', 'CLIENT_FR001'),
-  ('tpl-eu-demo', 'CLIENT_IT001'),
-  ('tpl-eu-demo', 'CLIENT_ES001'),
-  ('tpl-eu-demo', 'CLIENT_CZ001'),
-  ('tpl-eu-demo', 'CLIENT_PL001'),
-  ('tpl-apac-demo', 'CLIENT_JP001'),
-  ('tpl-apac-demo', 'CLIENT_CN001'),
-  ('tpl-apac-demo', 'CLIENT_HK001');
+INSERT INTO timer_client_ids (timer_id, client_id) VALUES
+  ('tm-eur-morning', 'CLIENT_GB001'),
+  ('tm-eur-morning', 'CLIENT_DE001'),
+  ('tm-eur-morning', 'CLIENT_FR001'),
+  ('tm-eur-noon', 'CLIENT_IT001'),
+  ('tm-eur-noon', 'CLIENT_ES001'),
+  ('tm-eur-noon', 'CLIENT_CZ001'),
+  ('tm-eur-noon', 'CLIENT_PL001'),
+  ('tm-apac-morning', 'CLIENT_JP001'),
+  ('tm-apac-morning', 'CLIENT_CN001'),
+  ('tm-apac-morning', 'CLIENT_HK001');
 
 -- Product types
-INSERT INTO timer_template_product_types (template_id, product_type) VALUES
-  ('tpl-us-demo', 'CASH'),
-  ('tpl-eu-demo', 'SWAP'),
-  ('tpl-apac-demo', 'CASH'),
-  ('tpl-apac-demo', 'SWAP');
+INSERT INTO timer_product_types (timer_id, product_type) VALUES
+  ('tm-eur-morning', 'CASH'),
+  ('tm-eur-noon', 'SWAP'),
+  ('tm-apac-morning', 'CASH'),
+  ('tm-apac-morning', 'SWAP');

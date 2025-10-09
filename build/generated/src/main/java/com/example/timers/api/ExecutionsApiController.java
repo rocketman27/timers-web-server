@@ -1,6 +1,6 @@
 package com.example.timers.api;
 
-import com.example.timers.model.TimerExecution;
+import com.example.timers.model.TimerExecutionDto;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
