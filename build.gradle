@@ -5,7 +5,7 @@ plugins {
 	id 'org.openapi.generator' version '7.7.0'
 }
 
-group = 'com.example.timers'
+group = 'com.bnpparibas.tr.timers'
 version = '0.0.1-SNAPSHOT'
 description = 'Demo project for Spring Boot'
 
@@ -51,9 +51,9 @@ openApiGenerate {
 	generatorName = "spring"
 	inputSpec = "$projectDir/openapi/api.yaml"
 	outputDir = "$buildDir/generated"
-	apiPackage = "com.example.timers.api"
-	modelPackage = "com.example.timers.model"
-	invokerPackage = "com.example.timers.invoker"
+	apiPackage = "com.bnpparibas.tr.timers.api"
+	modelPackage = "com.bnpparibas.tr.timers.model"
+	invokerPackage = "com.bnpparibas.tr.timers.invoker"
     modelNameSuffix = "Dto"
     configOptions = [
 		interfaceOnly: "false",

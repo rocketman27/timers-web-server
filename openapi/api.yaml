@@ -6,11 +6,11 @@ info:
 servers:
   - url: http://localhost:8080
 paths:
-  /api/templates:
+  /api/timers:
     get:
       tags: [Timers]
       summary: List timers
-      operationId: listTemplates
+      operationId: listTimers
       responses:
         '200':
           description: Timers
@@ -34,11 +34,11 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Timer' }
-  /api/templates/{id}:
+  /api/timers/{id}:
     get:
       tags: [Timers]
       summary: Get timer by id
-      operationId: getTemplateById
+      operationId: getTimer
       parameters:
         - in: path
           name: id

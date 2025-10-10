@@ -54,11 +54,11 @@ backend/
 - **Persistent storage**: Quartz jobs and triggers stored in DB (H2 in dev) via Quartz JDBC store for reliability.
 
 ## API (see `openapi/api.yaml`)
-- Timers (legacy tag name "Templates" in the spec)
-  - `GET /api/templates` — list timers
-  - `POST /api/templates` — create timer and schedule (resolves cron/trigger time)
-  - `GET /api/templates/{id}` — get timer by id
-  - `PUT /api/templates/{id}` — update timer and reschedule; if `suspended=true`, the job is paused (Quartz state `PAUSED`), otherwise `WAITING`.
+- Timers
+  - `GET /api/timers` — list timers
+  - `POST /api/timers` — create timer and schedule (resolves cron/trigger time)
+  - `GET /api/timers/{id}` — get timer by id
+  - `PUT /api/timers/{id}` — update timer and reschedule; if `suspended=true`, the job is paused (Quartz state `PAUSED`), otherwise `WAITING`.
 - Triggers
   - `POST /api/timers/{id}/_trigger` — manual, immediate fire (records execution with `TRIGGER_TYPE=MANUAL`)
   - `POST /api/timers/_trigger` — batch manual trigger by ids
