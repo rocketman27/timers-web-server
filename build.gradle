@@ -51,9 +51,9 @@ openApiGenerate {
 	generatorName = "spring"
 	inputSpec = "$projectDir/openapi/api.yaml"
 	outputDir = "$buildDir/generated"
-	apiPackage = "com.bnpparibas.tr.timers.api"
-	modelPackage = "com.bnpparibas.tr.timers.model"
-	invokerPackage = "com.bnpparibas.tr.timers.invoker"
+	apiPackage = "com.bnpparibas.tr.timer.api"
+	modelPackage = "com.bnpparibas.tr.timer.model"
+	invokerPackage = "com.bnpparibas.tr.timer.invoker"
     modelNameSuffix = "Dto"
     configOptions = [
 		interfaceOnly: "false",
