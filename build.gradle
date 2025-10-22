@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '3.5.5'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'org.openapi.generator' version '7.7.0'
+    id 'jacoco'
 }
 
 group = 'com.bnpparibas.tr.timers'
@@ -37,6 +38,67 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+    finalizedBy tasks.named('jacocoTestReport')
+}
+
+jacoco {
+    toolVersion = '0.8.12'
+}
+
+jacocoTestReport {
+    dependsOn tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+    // Exclude generated OpenAPI code and the Spring Boot main class from coverage metrics
+    def jacocoExcludes = [
+        'com/bnpparibas/tr/timer/api/**',
+        'com/bnpparibas/tr/timer/invoker/**',
+        'com/bnpparibas/tr/timer/model/**',
+        'com/bnpparibas/tr/timer/TimersWebServer*',
+        // exclude trivial domain POJOs/enums often not directly unit-testable
+        'com/bnpparibas/tr/timer/domain/**'
+    ]
+    classDirectories.setFrom(files(classDirectories.files.collect { fileTree(dir: it, exclude: jacocoExcludes) }))
+}
+
+jacocoTestCoverageVerification {
+    dependsOn tasks.named('test')
+    // Keep exclusions consistent with the report task
+    def jacocoExcludes = [
+        'com/bnpparibas/tr/timer/api/**',
+        'com/bnpparibas/tr/timer/invoker/**',
+        'com/bnpparibas/tr/timer/model/**',
+        'com/bnpparibas/tr/timer/TimersWebServer*',
+        'com/bnpparibas/tr/timer/domain/**'
+    ]
+    classDirectories.setFrom(files(classDirectories.files.collect { fileTree(dir: it, exclude: jacocoExcludes) }))
+    violationRules {
+        // Methods coverage >= 74% (avoid rounding failures)
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.74
+            }
+        }
+        // Classes coverage (classes with any coverage) >= 74%
+        rule {
+            element = 'BUNDLE'
+            limit {
+                counter = 'CLASS'
+                value = 'COVEREDRATIO'
+                minimum = 0.74
+            }
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('jacocoTestCoverageVerification')
 }
 
 sourceSets {
