@@ -53,6 +53,12 @@ public class TimersApiDelegateImpl implements TimersApiDelegate {
                            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Override
+    public ResponseEntity<Void> deleteTimer(String id) {
+        boolean removed = timerService.delete(id);
+        return removed ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
     private TimerDto toApi(Timer t) {
         TimerDto api = new TimerDto();
         api.setId(t.getId());

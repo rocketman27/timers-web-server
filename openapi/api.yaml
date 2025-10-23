@@ -157,6 +157,18 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Timer' }
+    delete:
+      tags: [Timers]
+      summary: Delete timer
+      operationId: deleteTimer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '204': { description: No Content }
+        '404': { description: Not Found }
   
   /api/executions:
     get:

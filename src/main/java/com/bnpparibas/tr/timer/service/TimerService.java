@@ -28,6 +28,17 @@ public class TimerService {
         return timers.findById(id);
     }
 
+    public boolean delete(String id) {
+        if (timers.existsById(id)) {
+            timers.deleteById(id);
+            try {
+                timerScheduler.unschedule(id);
+            } catch (SchedulerException ignored) { }
+            return true;
+        }
+        return false;
+    }
+
     public Timer saveAndSchedule(Timer timer) {
         if (timer.getId() == null || timer.getId().isBlank()) {
             timer.setId(UUID.randomUUID().toString());
