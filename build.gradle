@@ -64,6 +64,46 @@ jacocoTestReport {
     classDirectories.setFrom(files(classDirectories.files.collect { fileTree(dir: it, exclude: jacocoExcludes) }))
 }
 
+// Print a concise JaCoCo summary to the build log
+tasks.register('printCoverageSummary') {
+    dependsOn tasks.named('jacocoTestReport')
+    doLast {
+        def reportFile = file("$buildDir/reports/jacoco/test/jacocoTestReport.xml")
+        if (!reportFile.exists()) {
+            logger.lifecycle("JaCoCo report not found: ${reportFile}")
+            return
+        }
+        def txt = reportFile.getText('UTF-8')
+        // Strip DOCTYPE to avoid parser security restrictions
+        def sanitized = txt.replaceAll(/(?s)<!DOCTYPE.*?>/, '')
+        def xml = new groovy.xml.XmlSlurper().parseText(sanitized)
+        def rootCounters = xml.counter
+        if (rootCounters && rootCounters.size() > 0) {
+            def methodCounter = rootCounters.find { it.@type == 'METHOD' }
+            def classCounter = rootCounters.find { it.@type == 'CLASS' }
+            if (methodCounter && classCounter) {
+                def mMissed = new BigInteger(methodCounter.@missed.text())
+                def mCovered = new BigInteger(methodCounter.@covered.text())
+                def cMissed = new BigInteger(classCounter.@missed.text())
+                def cCovered = new BigInteger(classCounter.@covered.text())
+                def mTotal = mMissed + mCovered
+                def cTotal = cMissed + cCovered
+                def mPct = mTotal == 0 ? 0 : (mCovered * 100.0 / mTotal)
+                def cPct = cTotal == 0 ? 0 : (cCovered * 100.0 / cTotal)
+                logger.lifecycle(String.format("JaCoCo summary: methods %.2f%% (%d/%d), classes %.2f%% (%d/%d)", mPct, mCovered, mTotal, cPct, cCovered, cTotal))
+            } else {
+                logger.lifecycle("JaCoCo summary: root counters not found in XML")
+            }
+        } else {
+            logger.lifecycle("JaCoCo summary: counters not found in XML")
+        }
+    }
+}
+
+tasks.named('jacocoTestReport') {
+    finalizedBy tasks.named('printCoverageSummary')
+}
+
 jacocoTestCoverageVerification {
     dependsOn tasks.named('test')
     // Keep exclusions consistent with the report task
@@ -76,22 +116,22 @@ jacocoTestCoverageVerification {
     ]
     classDirectories.setFrom(files(classDirectories.files.collect { fileTree(dir: it, exclude: jacocoExcludes) }))
     violationRules {
-        // Methods coverage >= 74% (avoid rounding failures)
+        // Methods coverage >= 79%
         rule {
             element = 'CLASS'
             limit {
                 counter = 'METHOD'
                 value = 'COVEREDRATIO'
-                minimum = 0.74
+                minimum = 0.79
             }
         }
-        // Classes coverage (classes with any coverage) >= 74%
+        // Classes coverage (classes with any coverage) >= 79%
         rule {
             element = 'BUNDLE'
             limit {
                 counter = 'CLASS'
                 value = 'COVEREDRATIO'
-                minimum = 0.74
+                minimum = 0.79
             }
         }
     }
@@ -99,6 +139,25 @@ jacocoTestCoverageVerification {
 
 tasks.named('check') {
     dependsOn tasks.named('jacocoTestCoverageVerification')
+}
+
+// Export XML coverage to a stable, repo-root location for generic CI pipelines
+tasks.register('exportCoverageForCi') {
+    dependsOn tasks.named('jacocoTestReport')
+    doLast {
+        def targetDir = new File(rootDir, 'coverage')
+        if (!targetDir.exists()) targetDir.mkdirs()
+        copy {
+            from "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
+            into targetDir
+            rename { String n -> 'jacoco-timers-web-server.xml' }
+        }
+        logger.lifecycle("Exported coverage XML to ${new File(targetDir, 'jacoco-timers-web-server.xml').absolutePath}")
+    }
+}
+
+tasks.named('jacocoTestReport') {
+    finalizedBy tasks.named('exportCoverageForCi')
 }
 
 sourceSets {
