@@ -1,0 +1,294 @@
+databaseChangeLog:
+  # Base table: timers
+  - changeSet:
+      id: 0001-create-timers
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        not:
+          tableExists:
+            tableName: timers
+      changes:
+        - createTable:
+            tableName: timers
+            columns:
+              - column: { name: id, type: varchar(64), constraints: { primaryKey: true, nullable: false } }
+              - column: { name: name, type: varchar(255), constraints: { nullable: false } }
+              - column: { name: description, type: varchar(1024) }
+              - column: { name: cron_expression, type: varchar(255) }
+              - column: { name: zone_id, type: varchar(128), constraints: { nullable: false } }
+              - column: { name: trigger_time, type: time }
+              - column: { name: suspended, type: boolean, defaultValueBoolean: false, constraints: { nullable: false } }
+
+  # timer_countries + FK
+  - changeSet:
+      id: 0010-create-timer-countries
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: timer_countries
+      changes:
+        - createTable:
+            tableName: timer_countries
+            columns:
+              - column: { name: timer_id, type: varchar(64), constraints: { nullable: false } }
+              - column: { name: country,  type: varchar(64), constraints: { nullable: false } }
+  - changeSet:
+      id: 0011-fk-timer-countries
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          foreignKeyConstraintExists:
+            foreignKeyName: fk_timer_countries_timer
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: timer_countries
+            baseColumnNames: timer_id
+            referencedTableName: timers
+            referencedColumnNames: id
+            constraintName: fk_timer_countries_timer
+
+  # timer_regions + FK
+  - changeSet:
+      id: 0020-create-timer-regions
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: timer_regions
+      changes:
+        - createTable:
+            tableName: timer_regions
+            columns:
+              - column: { name: timer_id, type: varchar(64), constraints: { nullable: false } }
+              - column: { name: region,   type: varchar(128), constraints: { nullable: false } }
+  - changeSet:
+      id: 0021-fk-timer-regions
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          foreignKeyConstraintExists:
+            foreignKeyName: fk_timer_regions_timer
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: timer_regions
+            baseColumnNames: timer_id
+            referencedTableName: timers
+            referencedColumnNames: id
+            constraintName: fk_timer_regions_timer
+
+  # timer_subregions + FK
+  - changeSet:
+      id: 0030-create-timer-subregions
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: timer_subregions
+      changes:
+        - createTable:
+            tableName: timer_subregions
+            columns:
+              - column: { name: timer_id,  type: varchar(64), constraints: { nullable: false } }
+              - column: { name: subregion, type: varchar(128), constraints: { nullable: false } }
+  - changeSet:
+      id: 0031-fk-timer-subregions
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          foreignKeyConstraintExists:
+            foreignKeyName: fk_timer_subregions_timer
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: timer_subregions
+            baseColumnNames: timer_id
+            referencedTableName: timers
+            referencedColumnNames: id
+            constraintName: fk_timer_subregions_timer
+
+  # timer_flow_types + FK
+  - changeSet:
+      id: 0040-create-timer-flow-types
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: timer_flow_types
+      changes:
+        - createTable:
+            tableName: timer_flow_types
+            columns:
+              - column: { name: timer_id,  type: varchar(64), constraints: { nullable: false } }
+              - column: { name: flow_type, type: varchar(64), constraints: { nullable: false } }
+  - changeSet:
+      id: 0041-fk-timer-flow-types
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          foreignKeyConstraintExists:
+            foreignKeyName: fk_timer_flow_types_timer
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: timer_flow_types
+            baseColumnNames: timer_id
+            referencedTableName: timers
+            referencedColumnNames: id
+            constraintName: fk_timer_flow_types_timer
+
+  # timer_client_ids + FK
+  - changeSet:
+      id: 0050-create-timer-client-ids
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: timer_client_ids
+      changes:
+        - createTable:
+            tableName: timer_client_ids
+            columns:
+              - column: { name: timer_id,  type: varchar(64), constraints: { nullable: false } }
+              - column: { name: client_id, type: varchar(128), constraints: { nullable: false } }
+  - changeSet:
+      id: 0051-fk-timer-client-ids
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          foreignKeyConstraintExists:
+            foreignKeyName: fk_timer_client_ids_timer
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: timer_client_ids
+            baseColumnNames: timer_id
+            referencedTableName: timers
+            referencedColumnNames: id
+            constraintName: fk_timer_client_ids_timer
+
+  # timer_product_types + FK
+  - changeSet:
+      id: 0060-create-timer-product-types
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: timer_product_types
+      changes:
+        - createTable:
+            tableName: timer_product_types
+            columns:
+              - column: { name: timer_id,     type: varchar(64), constraints: { nullable: false } }
+              - column: { name: product_type, type: varchar(64), constraints: { nullable: false } }
+  - changeSet:
+      id: 0061-fk-timer-product-types
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          foreignKeyConstraintExists:
+            foreignKeyName: fk_timer_product_types_timer
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: timer_product_types
+            baseColumnNames: timer_id
+            referencedTableName: timers
+            referencedColumnNames: id
+            constraintName: fk_timer_product_types_timer
+
+  # timer_excluded_countries + FK
+  - changeSet:
+      id: 0070-create-timer-excluded-countries
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: timer_excluded_countries
+      changes:
+        - createTable:
+            tableName: timer_excluded_countries
+            columns:
+              - column: { name: timer_id,         type: varchar(64), constraints: { nullable: false } }
+              - column: { name: excluded_country, type: varchar(64), constraints: { nullable: false } }
+  - changeSet:
+      id: 0071-fk-timer-excluded-countries
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          foreignKeyConstraintExists:
+            foreignKeyName: fk_timer_excluded_countries_timer
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: timer_excluded_countries
+            baseColumnNames: timer_id
+            referencedTableName: timers
+            referencedColumnNames: id
+            constraintName: fk_timer_excluded_countries_timer
+
+  # timer_excluded_regions + FK
+  - changeSet:
+      id: 0080-create-timer-excluded-regions
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: timer_excluded_regions
+      changes:
+        - createTable:
+            tableName: timer_excluded_regions
+            columns:
+              - column: { name: timer_id,        type: varchar(64), constraints: { nullable: false } }
+              - column: { name: excluded_region, type: varchar(128), constraints: { nullable: false } }
+  - changeSet:
+      id: 0081-fk-timer-excluded-regions
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          foreignKeyConstraintExists:
+            foreignKeyName: fk_timer_excluded_regions_timer
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: timer_excluded_regions
+            baseColumnNames: timer_id
+            referencedTableName: timers
+            referencedColumnNames: id
+            constraintName: fk_timer_excluded_regions_timer
+
+  # timer_executions (no FK here)
+  - changeSet:
+      id: 0090-create-timer-executions
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: timer_executions
+      changes:
+        - createTable:
+            tableName: timer_executions
+            columns:
+              - column: { name: id,             type: varchar(64), constraints: { primaryKey: true, nullable: false } }
+              - column: { name: instance_id,    type: varchar(64) }
+              - column: { name: timer_id,       type: varchar(64) }
+              - column: { name: scheduled_for,  type: timestamp }
+              - column: { name: started_at,     type: timestamp }
+              - column: { name: finished_at,    type: timestamp }
+              - column: { name: outcome,        type: varchar(16) }
+              - column: { name: error_message,  type: varchar(1024) }
+              - column: { name: trigger_type,   type: varchar(16) }
+              - column: { name: idempotency_key,type: varchar(128) }
