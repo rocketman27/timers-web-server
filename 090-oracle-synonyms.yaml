@@ -1,0 +1,136 @@
+databaseChangeLog:
+  # Oracle-only synonyms and grants for APP_CLIENT over APP_OWNER objects
+
+  - changeSet:
+      id: 090-synonym-grant-TIMERS
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        dbms: oracle
+        sqlCheck:
+          expectedResult: "1"
+          sql: "SELECT CASE WHEN EXISTS (SELECT 1 FROM ALL_TABLES WHERE OWNER='APP_OWNER' AND TABLE_NAME='TIMERS') THEN 1 ELSE 0 END FROM DUAL"
+      changes:
+        - sql:
+            splitStatements: false
+            sql: "GRANT SELECT, INSERT, UPDATE, DELETE ON APP_OWNER.TIMERS TO APP_CLIENT"
+        - sql:
+            splitStatements: false
+            sql: "CREATE OR REPLACE SYNONYM APP_CLIENT.TIMERS FOR APP_OWNER.TIMERS"
+
+  - changeSet:
+      id: 091-synonym-grant-TIMER_COUNTRIES
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        dbms: oracle
+        sqlCheck:
+          expectedResult: "1"
+          sql: "SELECT CASE WHEN EXISTS (SELECT 1 FROM ALL_TABLES WHERE OWNER='APP_OWNER' AND TABLE_NAME='TIMER_COUNTRIES') THEN 1 ELSE 0 END FROM DUAL"
+      changes:
+        - sql: { splitStatements: false, sql: "GRANT SELECT, INSERT, UPDATE, DELETE ON APP_OWNER.TIMER_COUNTRIES TO APP_CLIENT" }
+        - sql: { splitStatements: false, sql: "CREATE OR REPLACE SYNONYM APP_CLIENT.TIMER_COUNTRIES FOR APP_OWNER.TIMER_COUNTRIES" }
+
+  - changeSet:
+      id: 092-synonym-grant-TIMER_REGIONS
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        dbms: oracle
+        sqlCheck:
+          expectedResult: "1"
+          sql: "SELECT CASE WHEN EXISTS (SELECT 1 FROM ALL_TABLES WHERE OWNER='APP_OWNER' AND TABLE_NAME='TIMER_REGIONS') THEN 1 ELSE 0 END FROM DUAL"
+      changes:
+        - sql: { splitStatements: false, sql: "GRANT SELECT, INSERT, UPDATE, DELETE ON APP_OWNER.TIMER_REGIONS TO APP_CLIENT" }
+        - sql: { splitStatements: false, sql: "CREATE OR REPLACE SYNONYM APP_CLIENT.TIMER_REGIONS FOR APP_OWNER.TIMER_REGIONS" }
+
+  - changeSet:
+      id: 093-synonym-grant-TIMER_SUBREGIONS
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        dbms: oracle
+        sqlCheck:
+          expectedResult: "1"
+          sql: "SELECT CASE WHEN EXISTS (SELECT 1 FROM ALL_TABLES WHERE OWNER='APP_OWNER' AND TABLE_NAME='TIMER_SUBREGIONS') THEN 1 ELSE 0 END FROM DUAL"
+      changes:
+        - sql: { splitStatements: false, sql: "GRANT SELECT, INSERT, UPDATE, DELETE ON APP_OWNER.TIMER_SUBREGIONS TO APP_CLIENT" }
+        - sql: { splitStatements: false, sql: "CREATE OR REPLACE SYNONYM APP_CLIENT.TIMER_SUBREGIONS FOR APP_OWNER.TIMER_SUBREGIONS" }
+
+  - changeSet:
+      id: 094-synonym-grant-TIMER_FLOW_TYPES
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        dbms: oracle
+        sqlCheck:
+          expectedResult: "1"
+          sql: "SELECT CASE WHEN EXISTS (SELECT 1 FROM ALL_TABLES WHERE OWNER='APP_OWNER' AND TABLE_NAME='TIMER_FLOW_TYPES') THEN 1 ELSE 0 END FROM DUAL"
+      changes:
+        - sql: { splitStatements: false, sql: "GRANT SELECT, INSERT, UPDATE, DELETE ON APP_OWNER.TIMER_FLOW_TYPES TO APP_CLIENT" }
+        - sql: { splitStatements: false, sql: "CREATE OR REPLACE SYNONYM APP_CLIENT.TIMER_FLOW_TYPES FOR APP_OWNER.TIMER_FLOW_TYPES" }
+
+  - changeSet:
+      id: 095-synonym-grant-TIMER_CLIENT_IDS
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        dbms: oracle
+        sqlCheck:
+          expectedResult: "1"
+          sql: "SELECT CASE WHEN EXISTS (SELECT 1 FROM ALL_TABLES WHERE OWNER='APP_OWNER' AND TABLE_NAME='TIMER_CLIENT_IDS') THEN 1 ELSE 0 END FROM DUAL"
+      changes:
+        - sql: { splitStatements: false, sql: "GRANT SELECT, INSERT, UPDATE, DELETE ON APP_OWNER.TIMER_CLIENT_IDS TO APP_CLIENT" }
+        - sql: { splitStatements: false, sql: "CREATE OR REPLACE SYNONYM APP_CLIENT.TIMER_CLIENT_IDS FOR APP_OWNER.TIMER_CLIENT_IDS" }
+
+  - changeSet:
+      id: 096-synonym-grant-TIMER_PRODUCT_TYPES
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        dbms: oracle
+        sqlCheck:
+          expectedResult: "1"
+          sql: "SELECT CASE WHEN EXISTS (SELECT 1 FROM ALL_TABLES WHERE OWNER='APP_OWNER' AND TABLE_NAME='TIMER_PRODUCT_TYPES') THEN 1 ELSE 0 END FROM DUAL"
+      changes:
+        - sql: { splitStatements: false, sql: "GRANT SELECT, INSERT, UPDATE, DELETE ON APP_OWNER.TIMER_PRODUCT_TYPES TO APP_CLIENT" }
+        - sql: { splitStatements: false, sql: "CREATE OR REPLACE SYNONYM APP_CLIENT.TIMER_PRODUCT_TYPES FOR APP_OWNER.TIMER_PRODUCT_TYPES" }
+
+  - changeSet:
+      id: 097-synonym-grant-TIMER_EXCLUDED_COUNTRIES
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        dbms: oracle
+        sqlCheck:
+          expectedResult: "1"
+          sql: "SELECT CASE WHEN EXISTS (SELECT 1 FROM ALL_TABLES WHERE OWNER='APP_OWNER' AND TABLE_NAME='TIMER_EXCLUDED_COUNTRIES') THEN 1 ELSE 0 END FROM DUAL"
+      changes:
+        - sql: { splitStatements: false, sql: "GRANT SELECT, INSERT, UPDATE, DELETE ON APP_OWNER.TIMER_EXCLUDED_COUNTRIES TO APP_CLIENT" }
+        - sql: { splitStatements: false, sql: "CREATE OR REPLACE SYNONYM APP_CLIENT.TIMER_EXCLUDED_COUNTRIES FOR APP_OWNER.TIMER_EXCLUDED_COUNTRIES" }
+
+  - changeSet:
+      id: 098-synonym-grant-TIMER_EXCLUDED_REGIONS
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        dbms: oracle
+        sqlCheck:
+          expectedResult: "1"
+          sql: "SELECT CASE WHEN EXISTS (SELECT 1 FROM ALL_TABLES WHERE OWNER='APP_OWNER' AND TABLE_NAME='TIMER_EXCLUDED_REGIONS') THEN 1 ELSE 0 END FROM DUAL"
+      changes:
+        - sql: { splitStatements: false, sql: "GRANT SELECT, INSERT, UPDATE, DELETE ON APP_OWNER.TIMER_EXCLUDED_REGIONS TO APP_CLIENT" }
+        - sql: { splitStatements: false, sql: "CREATE OR REPLACE SYNONYM APP_CLIENT.TIMER_EXCLUDED_REGIONS FOR APP_OWNER.TIMER_EXCLUDED_REGIONS" }
+
+  - changeSet:
+      id: 099-synonym-grant-TIMER_EXECUTIONS
+      author: timers
+      preConditions:
+        onFail: MARK_RAN
+        dbms: oracle
+        sqlCheck:
+          expectedResult: "1"
+          sql: "SELECT CASE WHEN EXISTS (SELECT 1 FROM ALL_TABLES WHERE OWNER='APP_OWNER' AND TABLE_NAME='TIMER_EXECUTIONS') THEN 1 ELSE 0 END FROM DUAL"
+      changes:
+        - sql: { splitStatements: false, sql: "GRANT SELECT, INSERT, UPDATE, DELETE ON APP_OWNER.TIMER_EXECUTIONS TO APP_CLIENT" }
+        - sql: { splitStatements: false, sql: "CREATE OR REPLACE SYNONYM APP_CLIENT.TIMER_EXECUTIONS FOR APP_OWNER.TIMER_EXECUTIONS" }
